@@ -57,12 +57,17 @@ class _MyHomePageState extends State<HomePage> {
           TextButton(onPressed: () {
             Reload();
           }, child: Text("UPDATE")),
-          Expanded(child: ListView.builder(
-              itemCount: viewModel.catsList.length,
-              itemBuilder: (context, index) {
-                final item = viewModel.catsList[index];
-                return CatItem(id: item.id, title: item.name, place: item.place, reward: item.reward, date: item.date, color: Colors.blue[400]);
-              })),
+          Expanded(child: RefreshIndicator(
+            onRefresh: Refresh,
+            child:ListView.builder(
+                itemCount: viewModel.catsList.length,
+                itemBuilder: (context, index) {
+                  final item = viewModel.catsList[index];
+                  return CatItem(id: item.id, title: item.name, place: item.place, reward: item.reward, date: item.date, color: Colors.blue[400]);
+                },
+              ),
+            ),
+          ),
         ],
       ),
       floatingActionButton: 1 == 1 ? FloatingActionButton(
@@ -79,6 +84,11 @@ class _MyHomePageState extends State<HomePage> {
     await viewModel.reload();
     UpdateList();
     //catItemList = List<ListItem>.generate(viewModel.catsList.length, (index) => CatListItem(viewModel.catsList[index].name, viewModel.catsList[index].place, viewModel.catsList[index].reward, viewModel.catsList[index].date))
+  }
+
+  Future<void> Refresh() async {
+    await viewModel.reload();
+    UpdateList();
   }
 
   void Reload() async{
