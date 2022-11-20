@@ -19,6 +19,17 @@ class Cat {
     required this.pictureUrl
   });
 
+  Map toJson() =>{
+    "id": 0,
+    "name": name,
+    "description": description,
+    "place": place,
+    "reward": reward,
+    "userId": userId,
+    "date": date,
+    "pictureUrl": pictureUrl
+  };
+
   @override
   String toString(){
     return 'Id: ' + id.toString() + ', Name: ' + name + ', Description: ' + description + ', Place: ' + place + ', Reward: ' + reward.toString() + ', User Id: ' + userId + ', Date: ' + date.toString() + ', Picture Url: ' + (pictureUrl == null ? 'null' : pictureUrl!);

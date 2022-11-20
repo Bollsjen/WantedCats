@@ -66,4 +66,17 @@ class CatRepository {
       return null;
     }
   }
+
+  void postCat(Cat cat) async{
+    try{
+      String json = jsonEncode(cat);
+      final response = await http.post(Uri.parse(url), headers: <String, String> { 'Content-Type': 'application/json; charset=UTF-8'},body: json);
+      if(response.statusCode != 201){
+        debugPrint(response.statusCode.toString());
+        debugPrint(json);
+      }
+    }catch(e){
+      debugPrint(e.toString());
+    }
+  }
 }

@@ -13,4 +13,8 @@ class CatViewModel {
   Future<Cat?> getCat(int id) async{
     return await repository.getCat(id);
   }
+
+  void postCat(Cat cat){
+    repository.postCat(cat);
+  }
 }

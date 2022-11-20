@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:wanted_cats/components/CatListItem.dart';
 import 'package:wanted_cats/models/CatViewModel.dart';
+import 'package:wanted_cats/pages/CreateCat.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-
-  final String title;
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _MyHomePageState();
@@ -66,6 +65,13 @@ class _MyHomePageState extends State<HomePage> {
               })),
         ],
       ),
+      floatingActionButton: 1 == 1 ? FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateCat()));
+        },
+        backgroundColor: Colors.blue[400],
+        child: Icon(Icons.add),
+      ) : null,
     );
   }
 
