@@ -14,7 +14,6 @@ class HomePage extends StatefulWidget {
 class _MyHomePageState extends State<HomePage> {
   final viewModel = CatViewModel();
   var catList = List.empty();
-  var catItemList;
 
   _MyHomePageState(){
     init();
@@ -25,6 +24,33 @@ class _MyHomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Wanted Cats'),
+        actions: [
+          PopupMenuButton(itemBuilder: (context) {
+            return [
+              PopupMenuItem<int>(
+                value: 0,
+                  child: Text('My Account')
+              ),
+              PopupMenuItem<int>(
+                  value: 1,
+                  child: Text('Settings')
+              ),
+              PopupMenuItem<int>(
+                  value: 2,
+                  child: Text('Login')
+              ),
+            ];
+          },
+          onSelected: (value) {
+            if(value == 0) {
+              debugPrint("My account");
+            }else if (value == 1){
+              debugPrint("Settings");
+            }else if (value == 2) {
+              debugPrint("Login");
+            }
+          }),
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -36,7 +62,7 @@ class _MyHomePageState extends State<HomePage> {
               itemCount: viewModel.catsList.length,
               itemBuilder: (context, index) {
                 final item = viewModel.catsList[index];
-                return CatItem(title: item.name, place: item.place, reward: item.reward, date: item.date, color: Colors.blue[400]);
+                return CatItem(id: item.id, title: item.name, place: item.place, reward: item.reward, date: item.date, color: Colors.blue[400]);
               })),
         ],
       ),

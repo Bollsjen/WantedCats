@@ -38,4 +38,32 @@ class CatRepository {
       return List.empty();
     }
   }
+
+  Future<Cat?> getCat(int id) async{
+    final response = await http.get(Uri.parse(url+"/"+id.toString()));
+
+    if (response.statusCode == 200) {
+      try {
+        dynamic myMap = json.decode(response.body);
+          Cat cat = Cat(
+              id: myMap['id'],
+              name: myMap['name'],
+              description: myMap['description'],
+              place: myMap['place'],
+              reward: myMap['reward'],
+              userId: myMap['userId'],
+              date: myMap['date'],
+              pictureUrl: myMap['pictureUrl']
+          );
+
+        return cat;
+        //return List.empty();
+      } catch (e) {
+        debugPrint(e.toString());
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
 }
