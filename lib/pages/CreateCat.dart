@@ -114,6 +114,35 @@ class _CreateCatState extends State<CreateCat> {
                 ),
               ),
             ),
+          ),
+
+
+
+          Padding(
+            padding: EdgeInsets.only(left: 8, right: 8, top: 24),
+            child: GestureDetector(
+              onTap: () {
+                CreateCat();
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.blue[400],
+                    borderRadius: BorderRadius.circular(10)
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Center(
+                    child: Text(
+                        'BACK',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        )
+                    ),
+                  ),
+                ),
+              ),
+            ),
           )
         ],
       )
