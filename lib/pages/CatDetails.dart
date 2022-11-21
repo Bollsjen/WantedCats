@@ -171,7 +171,11 @@ class _CatDetailsState extends State<CatDetails> {
               ),
             );
           }else {
-            return CircularProgressIndicator();
+            return Scaffold(
+                appBar: AppBar(
+                title: Text('Cat Details'),
+          ),
+          body: Center(child: CircularProgressIndicator()));
           }
         });
   }
@@ -183,7 +187,10 @@ class _CatDetailsState extends State<CatDetails> {
   }
 
   String time(){
-    DateTime _time = DateTime.fromMillisecondsSinceEpoch(cat!.date * 1000);
-    return DateFormat('dd-mm-yyy').format(_time);
+    int unix = (cat!.date * 1000);
+    DateTime _time = DateTime.fromMillisecondsSinceEpoch(unix, isUtc: true);
+    var dateFormat = DateFormat.yMd();
+    var formatted = dateFormat.format(_time).toString();
+    return formatted.toString();
   }
 }

@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:wanted_cats/components/CatListItem.dart';
 import 'package:wanted_cats/models/CatViewModel.dart';
 import 'package:wanted_cats/pages/CreateCat.dart';
+import 'package:async/async.dart';
+import 'package:wanted_cats/components/ChipButton.dart';
+import 'package:wanted_cats/pages/Signin.dart';
+import 'package:wanted_cats/pages/MyPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,12 +15,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<HomePage> {
+  final AsyncMemoizer _memoizer = AsyncMemoizer();
   final viewModel = CatViewModel();
   var catList = List.empty();
+  var loading = false;
 
-  _MyHomePageState(){
-    init();
-  }
+  late final chips = [
+
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +32,15 @@ class _MyHomePageState extends State<HomePage> {
         actions: [
           PopupMenuButton(itemBuilder: (context) {
             return [
-              PopupMenuItem<int>(
+              const PopupMenuItem<int>(
                 value: 0,
                   child: Text('My Account')
               ),
-              PopupMenuItem<int>(
+              const PopupMenuItem<int>(
                   value: 1,
                   child: Text('Settings')
               ),
-              PopupMenuItem<int>(
+              const PopupMenuItem<int>(
                   value: 2,
                   child: Text('Login')
               ),
@@ -42,63 +48,172 @@ class _MyHomePageState extends State<HomePage> {
           },
           onSelected: (value) {
             if(value == 0) {
-              debugPrint("My account");
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyPage()));
             }else if (value == 1){
               debugPrint("Settings");
             }else if (value == 2) {
-              debugPrint("Login");
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => Signin()));
             }
           }),
         ],
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          TextButton(onPressed: () {
-            Reload();
-          }, child: Text("UPDATE")),
-          Expanded(child: RefreshIndicator(
-            onRefresh: Refresh,
-            child:ListView.builder(
-                itemCount: viewModel.catsList.length,
-                itemBuilder: (context, index) {
-                  final item = viewModel.catsList[index];
-                  return CatItem(id: item.id, title: item.name, place: item.place, reward: item.reward, date: item.date, color: Colors.blue[400]);
-                },
+          children: [
+            Container(
+              height: 45,
+              width: double.infinity,
+              child: Padding(
+                padding: EdgeInsets.only(left: 8, right: 8),
+                child: ListView.builder(
+                    itemCount: 1,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return Wrap(
+                          children: [
+                          Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: GestureDetector(
+                              onTap: () => showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) => AlertDialog(
+                                    title: const Text('Filter'),
+                                    actions: [
+                                      Padding(padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white
+                                          ),
+                                          child: TextField(
+                                            decoration: InputDecoration(
+                                              hintText: 'Text'
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  )),
+                              child: Chip(
+                                label: Text('Filter'),
+                              ),
+                            ),
+                          ),
+
+                          ChipButton(
+                            title: 'Date',
+                            function: () {
+                              Sort();
+                            },
+                            checked: 0,
+                            checkAble: true,
+                          ),
+
+                          ChipButton(
+                            title: 'Name',
+                            function: () {
+                              Sort();
+                            },
+                            checked: 0,
+                            checkAble: true,
+                          ),
+
+                          ChipButton(
+                            title: 'Place',
+                            function: () {
+                              Sort();
+                            },
+                            checked: 0,
+                            checkAble: true,
+                          ),
+
+                          ChipButton(
+                            title: 'Reward',
+                            function: () {
+                              Sort();
+                            },
+                            checked: 0,
+                            checkAble: true,
+                          ),
+                        ],
+                      );
+                    }),
               ),
             ),
-          ),
-        ],
-      ),
+
+            FutureBuilder(
+                future: init(),
+                builder: (context, AsyncSnapshot<void> snapshot) {
+                  if(snapshot.hasData){
+                    return Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: ScrollRefresh,
+                        child: !loading ?
+                        ListView.builder(
+                          itemCount: catList.length,
+                          itemBuilder: (context, index) {
+                            final item = catList[index];
+                            return CatItem(id: item.id, title: item.name, place: item.place, reward: item.reward, date: item.date, color: Colors.blue[400]!);
+                          },
+                        )
+                            : Center(
+                            child: CircularProgressIndicator()
+                        ),
+                      ),
+                    );
+                  }else{
+                    return Center(child: CircularProgressIndicator());
+                  }
+                }),
+          ],
+        ),
       floatingActionButton: 1 == 1 ? FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateCat()));
         },
-        backgroundColor: Colors.blue[400],
+        backgroundColor: Colors.green[400],
         child: Icon(Icons.add),
       ) : null,
     );
   }
 
-  void init() async{
-    await viewModel.reload();
-    UpdateList();
-    //catItemList = List<ListItem>.generate(viewModel.catsList.length, (index) => CatListItem(viewModel.catsList[index].name, viewModel.catsList[index].place, viewModel.catsList[index].reward, viewModel.catsList[index].date))
+  Future<void> init() async{
+    return this._memoizer.runOnce(() async {
+      setState(() {
+        loading = true;
+      });
+      await viewModel.reload();
+      UpdateList();
+      return 'loaded';
+    });
+
   }
 
-  Future<void> Refresh() async {
+  Future<bool> ScrollRefresh() async {
     await viewModel.reload();
     UpdateList();
-  }
-
-  void Reload() async{
-    await viewModel.reload();
-    UpdateList();
+    return true;
   }
 
   void UpdateList(){
     setState(() {
       catList = viewModel.catsList;
+      ResetSorting();
+      loading = false;
+    });
+  }
+
+  void ResetSorting(){
+    setState(() {
+      for(var i = 0; i < chips.length; i++){
+        chips[i].checked = 0;
+      }
+    });
+  }
+
+  void Sort(){
+    setState(() {
+      loading = true;
+      catList = viewModel.sortCats(chips);
+      loading = false;
     });
   }
 }

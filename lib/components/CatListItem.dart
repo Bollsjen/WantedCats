@@ -8,8 +8,7 @@ class CatItem extends StatelessWidget {
   final String place;
   final int reward;
   final int date;
-
-  final color;
+  final Color color;
 
   const CatItem (
   {
@@ -25,12 +24,12 @@ class CatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 10, right: 10, bottom: 15),
+      padding: const EdgeInsets.only(left: 10, right: 10, bottom: 15),
       child: GestureDetector(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => CatDetails(id: id)));
         },
-        child: new Container(
+        child: Container(
           decoration: BoxDecoration(
               color: color
           ),
@@ -39,11 +38,11 @@ class CatItem extends StatelessWidget {
               Container(
                 width: 100,
                 height: 100,
-                child: Image(
+                child: const Image(
                     image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg')
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 15,
               ),
               Column(
@@ -51,24 +50,24 @@ class CatItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(title),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Text(reward.toString()),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Text(place)
                 ],
               ),
-              Flexible(
+              const Flexible(
                 fit: FlexFit.tight,
                 child: SizedBox(),
               ),
               Container(
                 height: 100,
                 child: Padding(
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   child: Align(
                     alignment: Alignment.bottomRight,
                     child: Text(
@@ -88,7 +87,10 @@ class CatItem extends StatelessWidget {
   }
 
   String time(){
-    DateTime _time = DateTime.fromMillisecondsSinceEpoch(date * 1000);
-    return DateFormat('dd-mm-yyy').format(_time);
+    int unix = (date * 1000);
+    DateTime _time = DateTime.fromMillisecondsSinceEpoch(unix, isUtc: true);
+    var dateFormat = DateFormat.yMd();
+    var formatted = dateFormat.format(_time).toString();
+    return formatted.toString();
   }
 }

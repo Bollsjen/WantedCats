@@ -122,7 +122,7 @@ class _CreateCatState extends State<CreateCat> {
             padding: EdgeInsets.only(left: 8, right: 8, top: 24),
             child: GestureDetector(
               onTap: () {
-                CreateCat();
+                Navigator.pop(context);
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -150,7 +150,8 @@ class _CreateCatState extends State<CreateCat> {
   }
 
   void CreateCat(){
-    Cat cat = Cat(id: 0, name: nameController.text, description: descriptionController.text, place: placeController.text, reward: int.parse(rewardController.text), userId: 'fisk', date: ((DateTime.now().millisecondsSinceEpoch / 1000)).floor(), pictureUrl: 'null');
+    double unix = (DateTime.now().millisecondsSinceEpoch / 1000);
+    Cat cat = Cat(id: 0, name: nameController.text, description: descriptionController.text, place: placeController.text, reward: int.parse(rewardController.text), userId: 'fisk', date: (unix).floor(), pictureUrl: 'null');
     viewModel.postCat(cat);
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage()));
   }
