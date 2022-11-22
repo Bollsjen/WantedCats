@@ -51,4 +51,16 @@ class CatViewModel {
 
     return list;
   }
+
+  List<Cat> myCats(String userId){
+    List<Cat> list = List.empty(growable: true);
+
+    catsList.forEach((element) {
+      list.add(element);
+    });
+    list = list.where((element) => element.userId == userId).toList();
+    debugPrint(list.toString());
+
+    return list;
+  }
 }
