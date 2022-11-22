@@ -25,27 +25,27 @@ class CatViewModel {
       list.add(element);
     });
 
-    if(chips[1].checked == 1){
+    if(chips[0].checked == 1){
       list.sort((a,b) => a.date.compareTo(b.date));
-    }else if (chips[1].checked == 2){
+    }else if (chips[0].checked == 2){
       list.sort((a,b) => b.date.compareTo(a.date));
     }
 
-    if(chips[2].checked == 1){
+    if(chips[1].checked == 1){
       list.sort((a,b) => a.name.compareTo(b.name));
-    }else if(chips[2].checked == 2){
+    }else if(chips[1].checked == 2){
       list.sort((a,b) => b.name.compareTo(a.name));
     }
 
-    if(chips[3].checked == 1){
+    if(chips[2].checked == 1){
       list.sort((a,b) => b.place.compareTo(a.place));
-    }else if(chips[3].checked == 2){
+    }else if(chips[2].checked == 2){
       list.sort((a,b) => a.place.compareTo(b.place));
     }
 
-    if(chips[4].checked == 1){
+    if(chips[3].checked == 1){
       list.sort((a,b) => b.reward.compareTo(a.reward));
-    }else if(chips[4].checked == 2){
+    }else if(chips[3].checked == 2){
       list.sort((a,b) => a.reward.compareTo(b.reward));
     }
 

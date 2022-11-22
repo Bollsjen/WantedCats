@@ -21,7 +21,41 @@ class _MyHomePageState extends State<HomePage> {
   var loading = false;
 
   late final chips = [
+    ChipButton(
+      title: 'Date',
+      function: () {
+        Sort();
+      },
+      checked: 0,
+      checkAble: true,
+    ),
 
+    ChipButton(
+      title: 'Name',
+      function: () {
+        Sort();
+      },
+      checked: 0,
+      checkAble: true,
+    ),
+
+    ChipButton(
+      title: 'Place',
+      function: () {
+        Sort();
+      },
+      checked: 0,
+      checkAble: true,
+    ),
+
+    ChipButton(
+      title: 'Reward',
+      function: () {
+        Sort();
+      },
+      checked: 0,
+      checkAble: true,
+    ),
   ];
 
   @override
@@ -69,7 +103,7 @@ class _MyHomePageState extends State<HomePage> {
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       return Wrap(
-                          children: [
+                          children: <Widget> [
                           Padding(
                             padding: EdgeInsets.only(right: 8),
                             child: GestureDetector(
@@ -97,42 +131,10 @@ class _MyHomePageState extends State<HomePage> {
                               ),
                             ),
                           ),
-
-                          ChipButton(
-                            title: 'Date',
-                            function: () {
-                              Sort();
-                            },
-                            checked: 0,
-                            checkAble: true,
-                          ),
-
-                          ChipButton(
-                            title: 'Name',
-                            function: () {
-                              Sort();
-                            },
-                            checked: 0,
-                            checkAble: true,
-                          ),
-
-                          ChipButton(
-                            title: 'Place',
-                            function: () {
-                              Sort();
-                            },
-                            checked: 0,
-                            checkAble: true,
-                          ),
-
-                          ChipButton(
-                            title: 'Reward',
-                            function: () {
-                              Sort();
-                            },
-                            checked: 0,
-                            checkAble: true,
-                          ),
+                            Wrap(
+                              children:
+                                chips.toList(),
+                            )
                         ],
                       );
                     }),
