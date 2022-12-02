@@ -153,6 +153,6 @@ class _CreateCatState extends State<CreateCat> {
     double unix = (DateTime.now().millisecondsSinceEpoch / 1000);
     Cat cat = Cat(id: 0, name: nameController.text, description: descriptionController.text, place: placeController.text, reward: int.parse(rewardController.text), userId: 'fisk', date: (unix).floor(), pictureUrl: 'null');
     viewModel.postCat(cat);
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage()));
+    Navigator.pop(context);
   }
 }
