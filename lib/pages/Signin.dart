@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:wanted_cats/pages/Signup.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import '../firebase_options.dart';
+
 class Signin extends StatefulWidget {
   const Signin({super.key});
 
@@ -9,14 +13,15 @@ class Signin extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<Signin> {
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
 
       ),
       body: Padding(
@@ -49,11 +54,11 @@ class _MyHomePageState extends State<Signin> {
                     padding: EdgeInsets.symmetric(vertical: 2, horizontal: 16),
                     child: TextField(
                       decoration: InputDecoration(
-                        hintText: 'Username...',
+                        hintText: 'Email...',
                         border: InputBorder.none,
 
                       ),
-                      controller: usernameController,
+                      controller: emailController,
                     ),
                   )
                 )
@@ -84,7 +89,7 @@ class _MyHomePageState extends State<Signin> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 2),
                 child: TextButton(
-                  onPressed: () {
+                  onPressed: () async {
 
                   },
                   child: Text(
@@ -107,8 +112,24 @@ class _MyHomePageState extends State<Signin> {
                   child: Padding(
                     padding: EdgeInsets.all(4),
                     child: TextButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        await Firebase.initializeApp(
+                          options: DefaultFirebaseOptions.currentPlatform,
+                        );
 
+                        try {
+                          final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                              email: emailController.text,
+                              password: passwordController.text
+                          );
+                          debugPrint("success");
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'user-not-found') {
+                            print('No user found for that email.');
+                          } else if (e.code == 'wrong-password') {
+                            print('Wrong password provided for that user.');
+                          }
+                        }
                       },
                       child: Text(
                           'Sign in',
@@ -127,7 +148,7 @@ class _MyHomePageState extends State<Signin> {
                   padding: EdgeInsets.all(8),
                   child: Wrap(
                     children: [
-                      Text('Not a member?'),
+                      Text('Already a member?'),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8),
                         child: GestureDetector(
@@ -135,7 +156,7 @@ class _MyHomePageState extends State<Signin> {
                             Navigator.of(context).push(MaterialPageRoute(builder: (context) => Signup()));
                           },
                           child: Text(
-                              'Register now',
+                              'Signin',
                               style: TextStyle(
                                   color: Colors.blue[400]
                               )

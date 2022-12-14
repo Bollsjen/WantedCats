@@ -7,6 +7,10 @@ import 'package:wanted_cats/components/ChipButton.dart';
 import 'package:wanted_cats/pages/Signin.dart';
 import 'package:wanted_cats/pages/MyPage.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import '../firebase_options.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -19,6 +23,11 @@ class _MyHomePageState extends State<HomePage> {
   final viewModel = CatViewModel();
   var catList = List.empty();
   var loading = false;
+  var signedIn = false;
+
+  _MyHomePageState(){
+    CheckSignedIn();
+  }
 
   late final chips = [
     ChipButton(
@@ -58,6 +67,31 @@ class _MyHomePageState extends State<HomePage> {
     ),
   ];
 
+  void CheckSignedIn() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    FirebaseAuth.instance
+        .authStateChanges()
+        .listen((User? user) {
+      if (user == null) {
+        setState(() {
+          signedIn = false;
+        });
+
+      } else {
+        setState(() {
+          signedIn = true;
+          debugPrint("User is signed in");
+        });
+      }
+    });
+    setState(() {
+      signedIn = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,27 +100,35 @@ class _MyHomePageState extends State<HomePage> {
         actions: [
           PopupMenuButton(itemBuilder: (context) {
             return [
-              const PopupMenuItem<int>(
+              PopupMenuItem<int>(
                 value: 0,
                   child: Text('My Account')
               ),
-              const PopupMenuItem<int>(
+              PopupMenuItem<int>(
                   value: 1,
                   child: Text('Settings')
               ),
-              const PopupMenuItem<int>(
+              PopupMenuItem<int>(
                   value: 2,
-                  child: Text('Login')
+                  child: !signedIn ? Text('Login') : Text('Sign out')
               ),
             ];
           },
-          onSelected: (value) {
+          onSelected: (value) async {
             if(value == 0) {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyPage()));
             }else if (value == 1){
               debugPrint("Settings");
             }else if (value == 2) {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => Signin()));
+              if(!signedIn) {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Signin()));
+              }else{
+                  await Firebase.initializeApp(
+                    options: DefaultFirebaseOptions.currentPlatform,
+                  );
+                  await FirebaseAuth.instance.signOut();
+                  CheckSignedIn();
+              }
             }
           }),
         ],
@@ -167,7 +209,7 @@ class _MyHomePageState extends State<HomePage> {
                 }),
           ],
         ),
-      floatingActionButton: 1 == 1 ? FloatingActionButton(
+      floatingActionButton: signedIn ? FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateCat()));
         },

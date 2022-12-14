@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:firebase_core/firebase_core.dart';
+import '../firebase_options.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -8,6 +12,16 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+
+  _SignupState(){
+    init();
+  }
+
+  Future<void>init () async{
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
 
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -31,8 +45,8 @@ class _SignupState extends State<Signup> {
                         style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold
-                        )
-                    ),
+                          ),
+                      ),
                   ),
                 ),
 
@@ -112,8 +126,26 @@ class _SignupState extends State<Signup> {
                     child: Padding(
                       padding: EdgeInsets.all(4),
                       child: TextButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          await Firebase.initializeApp(
+                            options: DefaultFirebaseOptions.currentPlatform,
+                          );
 
+                            debugPrint("Singing up");
+                            try {
+                              final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              );
+                            } on FirebaseAuthException catch (e) {
+                              if (e.code == 'weak-password') {
+                                debugPrint('The password provided is too weak.');
+                              } else if (e.code == 'email-already-in-use') {
+                                debugPrint('The account already exists for that email.');
+                              }
+                            } catch (e) {
+                              debugPrint(e.toString());
+                            }
                         },
                         child: Text(
                             'Signup',
